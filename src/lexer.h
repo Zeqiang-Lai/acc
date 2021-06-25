@@ -25,6 +25,7 @@ private:
     bool match(char target);
 
     void skip_whitespace();
+    void skip_comment();
     Token identifier();
     Token number();
 

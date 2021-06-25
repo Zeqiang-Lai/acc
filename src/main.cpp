@@ -53,6 +53,9 @@ int compile(string code, CmdOptions options) {
         tokens.push_back(token);
         if(token.type == TokenType::END) break;
     }
+    for(const auto& token : tokens) {
+        cout << token << endl;
+    }
     return 0;
 }
 
