@@ -22,6 +22,27 @@ void Lexer::skip_comment() {
     }
 }
 
+Token Lexer::character() {
+    char ch = next();
+    switch (ch) {
+        case '\\':
+            switch(next()) {
+                case 'n': ch = '\n'; break;
+                case 't': ch = '\t'; break;
+                case '\\': ch = '\\'; break;
+                default:
+                    cerr << "invalid escaped character" << endl;
+                    break;
+            }
+            expect('\'');
+            break;
+        default:
+            expect('\'');
+            break;
+    }
+    return Token(TokenType::CHAR_CONST, ch);
+}
+
 Token Lexer::identifier() {
     vector<char> chs;
     char ch = previous();
@@ -47,6 +68,7 @@ Token Lexer::number() {
     back();
     if (match('.')) {
         number.push_back('.');
+        ch = next();
         while (isdigit(ch)) {
             number.push_back(ch);
             ch = next();
@@ -94,6 +116,7 @@ Token Lexer::lex() {
         case '}': return make_token(TokenType::RBRACE);
         case 'a' ... 'z': case 'A' ... 'Z': case '_': return identifier();
         case '0' ... '9': return number();
+        case '\'': return character();
         case '\0': return make_token(TokenType::END);
         default: return make_token(TokenType::INVALID);
     }
@@ -121,6 +144,11 @@ bool Lexer::match(char target) {
         return true;
     }
     return false;
+}
+
+void Lexer::expect(char target) {
+    if(!match(target))
+        cerr << "expect " << target << endl;
 }
 
 Token Lexer::make_token(TokenType type) {
