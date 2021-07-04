@@ -11,11 +11,11 @@ using namespace std;
 
 class Lexer {
 public:
-    Lexer(string code) : code(code), idx(0) {}
+    explicit Lexer(const string& code) : code(code), idx(0) {}
     Token lex();
 
 private:
-    string code;
+    const string& code;
     int idx;
 
     char peek();

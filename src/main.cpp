@@ -23,7 +23,7 @@ public:
     }
 };
 
-string read_file(string file_path) {
+string read_file(const string& file_path) {
     ifstream input;
     input.open(file_path);
 
@@ -45,7 +45,7 @@ void check_status(int status) {
     } 
 }
 
-int compile(string code, CmdOptions options) {
+int compile(const string& code, CmdOptions options) {
     Lexer lexer(code);
     vector<Token> tokens;
     while (true) {
