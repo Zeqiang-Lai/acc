@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "lexer.h"
+#include "parser.h"
+#include "ast.h"
 
 using namespace std;
 
@@ -56,6 +58,8 @@ int compile(const string& code, CmdOptions options) {
     for(const auto& token : tokens) {
         cout << token << endl;
     }
+    Parser parser(tokens);
+    parser.parse();
     return 0;
 }
 
