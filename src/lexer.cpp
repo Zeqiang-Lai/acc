@@ -24,21 +24,18 @@ void Lexer::skip_comment() {
 
 Token Lexer::character() {
     char ch = next();
-    switch (ch) {
-        case '\\':
-            switch(next()) {
-                case 'n': ch = '\n'; break;
-                case 't': ch = '\t'; break;
-                case '\\': ch = '\\'; break;
-                default:
-                    cerr << "invalid escaped character" << endl;
-                    break;
-            }
-            expect('\'');
-            break;
-        default:
-            expect('\'');
-            break;
+    if(ch == '\\') {
+        switch(next()) {
+            case 'n': ch = '\n'; break;
+            case 't': ch = '\t'; break;
+            case '\\': ch = '\\'; break;
+            default:
+                cerr << "invalid escaped character" << endl;
+                break;
+        }
+        expect('\'');
+    }else {
+        expect('\'');
     }
     return Token(TokenType::CHAR_CONST, ch);
 }
@@ -97,7 +94,7 @@ Token Lexer::lex() {
             if (match('=')) return make_token(TokenType::MINUS_ASSIGN);
             else if (match('-')) return make_token(TokenType::DECREMENT);
             else return make_token(TokenType::MINUS);
-        case '*': return make_token(match('=') ? TokenType::MULT_ASSIGN : TokenType::MULT);
+        case '*': return make_token(match('=') ? TokenType::MULTI_ASSIGN : TokenType::MULTI);
         case '/': return make_token(match('=') ? TokenType::DIV_ASSIGN : TokenType::DIV);
         case '%': return make_token(match('=') ? TokenType::MOD_ASSIGN : TokenType::MOD);
         case '&': return make_token(match('&') ? TokenType::LOGIC_AND : TokenType::AND);
