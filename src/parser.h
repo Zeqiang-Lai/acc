@@ -11,31 +11,56 @@
 
 class Parser {
 public:
-    explicit Parser(const vector<Token>& tokens) : tokens(tokens), index(0) {}
-    TranslationUnit parse();
+    explicit Parser(const vector<Token> &tokens) : tokens(tokens), index(0) {}
+
+    TranslationUnit *parse();
 
 protected:
-    Expr parseExpr();
-    Expr parseAssignmentExpr();
-    Expr parseConditionalExpr();
-    Expr parseLogicalOrExpr();
-    Expr parseLogicalAndExpr();
-    Expr parseInclusiveOrExpr();
-    Expr parseExclusiveOrExpr();
-    Expr parseAndExpr();
-    Expr parseEqualityExpr();
-    Expr parseRelationalExpr();
-    Expr parseShiftExpr();
-    Expr parseAdditiveExpr();
-    Expr parseMultiplicativeExpr();
-    Expr parseCastExpr();
-    Expr parseUnaryExpr();
-    Expr parsePostfixExpr();
-    Expr parsePrimaryExpr();
+    Declaration *parseDeclaration();
+
+    TypeSpecifier* parseTypeSpecifier();
+
+    CompoundStatement* parseCompoundStmt();
+
+    Expr *parseExpr();
+
+    Expr *parseAssignmentExpr();
+
+    Expr *parseConditionalExpr();
+
+    Expr *parseLogicalOrExpr();
+
+    Expr *parseLogicalAndExpr();
+
+    Expr *parseInclusiveOrExpr();
+
+    Expr *parseExclusiveOrExpr();
+
+    Expr *parseAndExpr();
+
+    Expr *parseEqualityExpr();
+
+    Expr *parseRelationalExpr();
+
+    Expr *parseShiftExpr();
+
+    Expr *parseAdditiveExpr();
+
+    Expr *parseMultiplicativeExpr();
+
+    Expr *parseCastExpr();
+
+    Expr *parseUnaryExpr();
+
+    Expr *parsePostfixExpr();
+
+    Identifier * parseIdentifier();
 
     void consume(TokenType type);
 
-    const vector<Token>& tokens;
+    bool match(TokenType type);
+
+    const vector<Token> &tokens;
     int index;
 };
 

@@ -24,7 +24,7 @@ enum class TokenType : unsigned {
 
     // keywords
     INT, FLOAT, DOUBLE, CHAR, VOID,
-    IF, ELSE, FOR, WHILE, RETURN, BREAK, CONTINUE,
+    IF, ELSE, FOR, WHILE, RETURN, BREAK, CONTINUE, STRUCT,
 
     NEWLINE,
     INVALID, END
