@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include "span.h"
+#include "type.h"
 
 using namespace std;
 
@@ -19,6 +20,11 @@ public:
 
     Span span;
 };
+
+class Stmt : public Node{
+
+};
+
 
 class Expr : public Node {
 
@@ -67,21 +73,31 @@ public:
     FunCall(Expr *func, const vector<Expr *> &parameters) : func(func), parameters(parameters) {}
 };
 
-enum class UnaryOp {
-    Plus,       // +
-    Minus,      // -
+enum class OperatorTag {
     Complement, // ^
     Negate,     // !
     Pointer,    // *
-    Address     // &
+    Address,     // &
+
+    Plus, Minus,
+    Multiply, Divide, Modulo,
+    Less, Greater,
+    LessOrEqual, GreaterOrEqual,
+    Equals, NotEquals,
+    LogicalAnd, LogicalOr
+};
+
+class Operator : public Node {
+public:
+    const OperatorTag tag;
+
+    Operator(const OperatorTag tag) : tag(tag) {}
 };
 
 class Unary : public Expr {
 public:
-    Expr *op;
-    UnaryOp type;
-
-    Unary(Expr *op, UnaryOp type) : op(op), type(type) {}
+    Expr *operand;
+    Operator *op;
 };
 
 class Cast : public Expr {
@@ -90,21 +106,12 @@ public:
 
 };
 
-enum class BinaryOp {
-    Multiply, Divide, Modulo,
-    Plus, Minus,
-    Less, Greater,
-    LessOrEqual, GreaterOrEqual,
-    Equals, NotEquals,
-    LogicalAnd, LogicalOr
-};
-
 class Binary : public Expr {
 public:
     Expr *lhs, *rhs;
-    BinaryOp type;
+    Operator op;
 
-    Binary(Expr *lhs, Expr *rhs, BinaryOp type) : lhs(lhs), rhs(rhs), type(type) {}
+    Binary(Expr *lhs, Expr *rhs, Operator op) : lhs(lhs), rhs(rhs), op(op) {}
 };
 
 class Conditional : public Expr {
@@ -137,24 +144,16 @@ class TranslationUnit;
 
 class FunctionDefinition;
 
-class Declaration;
-
-class TypeSpecifier;
-
-class TranslationUnit {
+class TypeSpecifier : public Node{
 public:
-    vector<Declaration *> declarations;
-
-    explicit TranslationUnit(const vector<Declaration *> &declarations) : declarations(declarations) {}
-};
-
-class TypeSpecifier {
-
+    string name;
+    Type type;
 };
 
 class Declaration : public Node {
 
 };
+
 
 class FunctionDefinition : public Declaration{
 public:
@@ -178,6 +177,13 @@ public:
 
     VarDeclaration(TypeSpecifier *type, Identifier *name, Expr *initializer)
             : type(type), name(name), initializer(initializer) {}
+};
+
+class TranslationUnit {
+public:
+    vector<Declaration *> declarations;
+
+    explicit TranslationUnit(const vector<Declaration *> &declarations) : declarations(declarations) {}
 };
 
 #endif //ACC_AST_H
