@@ -19,6 +19,7 @@ enum class PrimitiveTypeTag {
 
 class PrimitiveType : public Type {
     PrimitiveTypeTag tag;
+
     explicit PrimitiveType(PrimitiveTypeTag tag) : tag(tag) {}
 
 public:
@@ -26,12 +27,12 @@ public:
 };
 
 class StructType : public Type {
-    std::map<std::string, Type&> fields;
+    std::map<std::string, Type *> fields;
 
 public:
-    StructType(std::map<std::string, Type &> fields) : fields(std::move(fields)) {}
+    StructType(std::map<std::string, Type *> fields) : fields(std::move(fields)) {}
 
-    Type& field(const std::string& name) { return fields[name]; }
+    Type *field(const std::string &name) { return fields[name]; }
 };
 
 class ArrayType : public Type {

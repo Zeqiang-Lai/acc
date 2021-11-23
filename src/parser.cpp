@@ -1,60 +1,69 @@
 #include "parser.h"
+#include "type.h"
+
 #include <iostream>
 
 TranslationUnit *Parser::parse() {
-    vector<Declaration *> declarations;
+    vector<Node *> declarations;
     while (!match(TokenType::END)) {
-        declarations.push_back(parseDeclaration());
+        Type *declType = parseTypeSpecifier();
+        if(match(TokenType::SEMICOLON)) { continue; }
+        do {
+
+        } while (match(TokenType::COMMA));
     }
     return new TranslationUnit(declarations);
 }
 
-Declaration *Parser::parseDeclaration() {
-    auto type = parseTypeSpecifier();
-    auto id = parseIdentifier();
+// region: Declaration
 
-    // it is a function definition
-    if(match(TokenType::LPAREN)) {
-        vector<pair<TypeSpecifier*, Identifier*>> arguments;
-        if(!match(TokenType::RPAREN)) {
-            do {
-                auto paramType = parseTypeSpecifier();
-                auto paramId = parseIdentifier();
-                arguments.emplace_back(paramType, paramId);
-            } while(match(TokenType::COMMA));
-            consume(TokenType::RPAREN);
-            auto body = parseCompoundStmt();
-            return new FunctionDefinition(type, id, arguments, body);
-        }
-    } else {
-        // else it is a var definition
-
-        // array
-        if(match(TokenType::LBRACKET)) {
-            consume(TokenType::RBRACKET);
-        } else if(match(TokenType::ASSIGN)) {
-
-        }
-
-        consume(TokenType::SEMICOLON);
+Type *Parser::parseTypeSpecifier() {
+    Token token = next();
+    switch (token.type) {
+        case TokenType::INT:
+            return &PrimitiveType::Int;
+        case TokenType::VOID:
+            return &PrimitiveType::Void;
+        case TokenType::CHAR:
+            return &PrimitiveType::Char;
+        case TokenType::DOUBLE:
+            return &PrimitiveType::Double;
+        case TokenType::STRUCT:
+            return parseStruct();
+        case TokenType::ID:
+            // unknown type name '#'
+            break;
+        default:
+            // expect external declaration
+            break;
     }
+}
+
+Type *Parser::parseStruct() {
+    Token token = next();
+    if (token.type == TokenType::ID) {
+        if(peek().type == TokenType::LBRACE) {
+            // definition
+            next();
+            return parseStructDeclarationList(&token);
+        } else {
+            // declaration of struct
+        }
+    } else if (token.type == TokenType::LBRACE) {
+        // anonymous struct
+        return parseStructDeclarationList(nullptr);
+    }
+    // error: Declaration of anonymous struct must be a definition
+}
+
+Type *Parser::parseStructDeclarationList(Token *id) {
+
     return nullptr;
 }
 
-Expr *Parser::parseExpr() {
-    return parseAssignmentExpr();
-}
+// endregion
 
-Expr *Parser::parseAssignmentExpr() {
-    auto lvalue = parseUnaryExpr();
-    consume(TokenType::ASSIGN);
-    auto rvalue = parseExpr();
-    return new Assignment(lvalue, rvalue);
-}
-
-Expr *Parser::parseUnaryExpr() {
-    return nullptr;
-}
+// region Utils
 
 void Parser::consume(TokenType type) {
     if (tokens[index].type == type) {
@@ -66,18 +75,19 @@ void Parser::consume(TokenType type) {
 }
 
 bool Parser::match(TokenType type) {
-    return tokens[index++].type == type;
+    if (tokens[index].type == type) {
+        index++;
+        return true;
+    }
+    return false;
 }
 
-TypeSpecifier *Parser::parseTypeSpecifier() {
-    return nullptr;
+Token Parser::peek() {
+    return tokens[index];
 }
 
-Identifier * Parser::parseIdentifier() {
-    return nullptr;
+Token Parser::next() {
+    return tokens[index++];
 }
 
-CompoundStatement *Parser::parseCompoundStmt() {
-    return nullptr;
-}
-
+// endregion

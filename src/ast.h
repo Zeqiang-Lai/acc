@@ -14,17 +14,13 @@ using namespace std;
 
 class Node {
 public:
-    Node(const Span &span) : span(span) {}
-
-    Node() {}
-
     Span span;
+public:
+    Node(const Span &span) : span(span) {}
+    Node() {}
 };
 
-class Stmt : public Node{
-
-};
-
+// region Expression:
 
 class Expr : public Node {
 
@@ -32,16 +28,17 @@ class Expr : public Node {
 
 class Identifier : public Expr {
 public:
-    Identifier(const string &name) : name(name) {}
-
     string name;
+    Type* type;
+public:
+    Identifier(const string &name) : name(name) {}
 };
 
 class Integer : public Expr {
 public:
-    Integer(int number) : number(number) {}
-
     int number;
+public:
+    Integer(int number) : number(number) {}
 };
 
 class Float : public Expr {
@@ -128,62 +125,49 @@ public:
     Assignment(Expr *lvalue, Expr *rvalue) : lvalue(lvalue), rvalue(rvalue) {}
 };
 
-class Statement;
 
-class CompoundStatement;
+// endregion
 
-class ExprStatement;
+// region Statement
 
-class IfStatement;
-
-class IterationStatement;
-
-class JumpStatement;
-
-class TranslationUnit;
-
-class FunctionDefinition;
-
-class TypeSpecifier : public Node{
-public:
-    string name;
-    Type type;
-};
-
-class Declaration : public Node {
+class Stmt : public Node{
 
 };
 
+class CompoundStmt;
 
-class FunctionDefinition : public Declaration{
+class ExprStmt;
+
+class IfStmt;
+
+class IterationStmt;
+
+class JumpStmt;
+
+// endregion
+
+class Decl : public Node {
 public:
-    TypeSpecifier *returnType;
-    Identifier *name;
-    vector<pair<TypeSpecifier *, Identifier *>> arguments;
-    CompoundStatement *body;
-
-    FunctionDefinition(TypeSpecifier *return_type,
-                       Identifier *name,
-                       const vector<pair<TypeSpecifier *, Identifier *>> &arguments,
-                       CompoundStatement *body)
-                       : returnType(return_type), name(name), arguments(arguments), body(body) {}
+    Identifier* id;
+    Expr* initializer;
+public:
+    Decl(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
 };
 
-class VarDeclaration : public Declaration{
-public:
-    TypeSpecifier *type;
-    Identifier *name;
-    Expr *initializer;
 
-    VarDeclaration(TypeSpecifier *type, Identifier *name, Expr *initializer)
-            : type(type), name(name), initializer(initializer) {}
+class FuncDef : public Node{
+public:
+    Identifier *id;
+    CompoundStmt *body;
+public:
+    FuncDef(Identifier *id, CompoundStmt *body) : id(id), body(body) {}
 };
 
 class TranslationUnit {
 public:
-    vector<Declaration *> declarations;
-
-    explicit TranslationUnit(const vector<Declaration *> &declarations) : declarations(declarations) {}
+    vector<Node *> declarations;
+public:
+    explicit TranslationUnit(const vector<Node *> &declarations) : declarations(declarations) {}
 };
 
 #endif //ACC_AST_H

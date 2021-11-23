@@ -21,7 +21,7 @@ llvm_map_components_to_libnames(llvm_libs support core irreader)
 
 # Add an executable
 aux_source_directory(src ALL_SRCS)
-add_executable(acc ${ALL_SRCS} src/span.cpp src/span.h)
+add_executable(acc ${ALL_SRCS})
 
 # Link against LLVM libraries
 target_link_libraries(acc ${llvm_libs})

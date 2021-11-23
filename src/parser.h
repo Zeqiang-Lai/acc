@@ -16,50 +16,17 @@ public:
     TranslationUnit *parse();
 
 protected:
-    Declaration *parseDeclaration();
+    Type *parseTypeSpecifier();
+    Type *parseStruct();
+    Type *parseStructDeclarationList(Token* id);
 
-    TypeSpecifier* parseTypeSpecifier();
-
-    CompoundStatement* parseCompoundStmt();
-
-    Expr *parseExpr();
-
-    Expr *parseAssignmentExpr();
-
-    Expr *parseConditionalExpr();
-
-    Expr *parseLogicalOrExpr();
-
-    Expr *parseLogicalAndExpr();
-
-    Expr *parseInclusiveOrExpr();
-
-    Expr *parseExclusiveOrExpr();
-
-    Expr *parseAndExpr();
-
-    Expr *parseEqualityExpr();
-
-    Expr *parseRelationalExpr();
-
-    Expr *parseShiftExpr();
-
-    Expr *parseAdditiveExpr();
-
-    Expr *parseMultiplicativeExpr();
-
-    Expr *parseCastExpr();
-
-    Expr *parseUnaryExpr();
-
-    Expr *parsePostfixExpr();
-
-    Identifier * parseIdentifier();
-
+protected:
     void consume(TokenType type);
-
     bool match(TokenType type);
+    Token peek();
+    Token next();
 
+protected:
     const vector<Token> &tokens;
     int index;
 };
