@@ -4,7 +4,7 @@
 #include "token.h"
 
 void Lexer::skip_whitespace() {
-    while (match(' ') || match('\t') || match('\n'));
+    while (match(' ') || match('\t')  || match('\r') || match('\n'));
 }
 
 void Lexer::skip_comment() {
