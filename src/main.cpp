@@ -59,7 +59,7 @@ int compile(const string& code, CmdOptions options) {
         cout << token << endl;
     }
     Parser parser(tokens);
-    parser.parse();
+    auto unit = parser.parse();
     return 0;
 }
 

@@ -9,6 +9,7 @@
 #include <string>
 #include "span.h"
 #include "type.h"
+#include "visitor.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ public:
     Type* type;
 public:
     Identifier(const string &name) : name(name) {}
+    void accept(Visitor* visitor) {visitor->visit(this);}
 };
 
 class Integer : public Expr {
@@ -70,31 +72,20 @@ public:
     FunCall(Expr *func, const vector<Expr *> &parameters) : func(func), parameters(parameters) {}
 };
 
-enum class OperatorTag {
+enum class UnaryOp {
     Complement, // ^
-    Negate,     // !
+    Not,     // !
     Pointer,    // *
     Address,     // &
-
-    Plus, Minus,
-    Multiply, Divide, Modulo,
-    Less, Greater,
-    LessOrEqual, GreaterOrEqual,
-    Equals, NotEquals,
-    LogicalAnd, LogicalOr
-};
-
-class Operator : public Node {
-public:
-    const OperatorTag tag;
-
-    Operator(const OperatorTag tag) : tag(tag) {}
+    Positive, Negative  // + -
 };
 
 class Unary : public Expr {
 public:
     Expr *operand;
-    Operator *op;
+    UnaryOp op;
+
+    Unary(Expr *operand, UnaryOp op) : operand(operand), op(op) {}
 };
 
 class Cast : public Expr {
@@ -103,12 +94,21 @@ public:
 
 };
 
+enum class BinaryOp {
+    Plus, Minus,
+    Multiply, Divide, Modulo,
+    Less, Greater,
+    LessOrEqual, GreaterOrEqual,
+    Equals, NotEquals,
+    LogicalAnd, LogicalOr
+};
+
 class Binary : public Expr {
 public:
     Expr *lhs, *rhs;
-    Operator op;
+    BinaryOp op;
 
-    Binary(Expr *lhs, Expr *rhs, Operator op) : lhs(lhs), rhs(rhs), op(op) {}
+    Binary(Expr *lhs, Expr *rhs, BinaryOp op) : lhs(lhs), rhs(rhs), op(op) {}
 };
 
 class Conditional : public Expr {
