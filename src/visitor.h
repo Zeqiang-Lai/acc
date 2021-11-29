@@ -17,6 +17,7 @@ class Assignment;
 class Visitor {
 public:
     //@formatter:off
+//    virtual ~Visitor(){};
     virtual void visit(Integer *node) {};
     virtual void visit(Identifier *node) {};
     virtual void visit(ArrayRef *node) {};

@@ -71,8 +71,10 @@ Token Lexer::number() {
             ch = next();
         }
         back();
+        number.push_back('\0');
         return Token(TokenType::FLOAT_CONST, atof(number.data()));
     }
+    number.push_back('\0');
     return Token(TokenType::INT_CONST, atoi(number.data()));
 }
 

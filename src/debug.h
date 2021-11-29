@@ -7,10 +7,12 @@
 
 #include "ast.h"
 #include "visitor.h"
+#include <map>
 
-class ASTPrinter : public Visitor{
+class ASTPrinter : public Visitor {
 public:
-    //@formatter:off
+    //@formatter:off232
+    void print(Node* node) { node->accept(this); }
     void visit(Integer *node) override;
     void visit(Identifier *node) override;
     void visit(ArrayRef *node) override;
@@ -21,11 +23,44 @@ public:
     void visit(Assignment *node) override;
 
 protected:
-    int indent_level;
+    int indent_level = 0;
     void indent() { indent_level += 1; }
     void deindent() { indent_level = max(0, indent_level-1);}
+    void print(const char* fmt, ...) const {
+        for(int i=0; i<indent_level; i++) printf(" ");
+        va_list arg;
+        va_start(arg, fmt);
+        vprintf(fmt, arg);
+        va_end(arg);
+        printf("\n");
+    }
+
     //@formatter:on
 };
 
+static std::map<BinaryOp, string> binaryOp2string = {
+        {BinaryOp::Plus, "+"},
+        {BinaryOp::Minus, "-"},
+        {BinaryOp::Multiply, "*"},
+        {BinaryOp::Divide, "/"},
+        {BinaryOp::Modulo, "%"},
+        {BinaryOp::Less, "<"},
+        {BinaryOp::Greater, ">"},
+        {BinaryOp::LessOrEqual, "<="},
+        {BinaryOp::GreaterOrEqual, ">="},
+        {BinaryOp::Equals, "=="},
+        {BinaryOp::NotEquals, "!="},
+        {BinaryOp::LogicalAnd, "&&"},
+        {BinaryOp::LogicalOr, "||"},
+};
+
+static std::map<UnaryOp, string> unaryOp2string = {
+        {UnaryOp::Complement, "^"},
+        {UnaryOp::Not, "!"},
+        {UnaryOp::Pointer, "*"},
+        {UnaryOp::Address, "&"},
+        {UnaryOp::Positive, "+"},
+        {UnaryOp::Negative, "-"},
+};
 
 #endif //ACC_DEBUG_H

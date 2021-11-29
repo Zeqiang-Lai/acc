@@ -14,3 +14,6 @@ sudo ./llvm.sh 13
 sudo apt-get install zlib1g zlib1g-dev
 ```
 
+## Reference
+
+1. Constant Folding: https://www.zhihu.com/question/55976094/answer/147302764

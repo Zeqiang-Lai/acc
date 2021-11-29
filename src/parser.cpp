@@ -130,7 +130,6 @@ Expr *Parser::parseExpr() {
 }
 
 Expr *Parser::parseAssignExpr() {
-    // TODO: conditional expression
     Expr *expr = parseConditionalExpr();
     auto op = peek();
     if (isAssignOp(op.type)) {
@@ -148,6 +147,7 @@ bool Parser::isAssignOp(TokenType type) {
 
 
 Expr *Parser::parseConditionalExpr() {
+    // TODO: conditional expression
     return parseLogicalOrExpr();
 }
 
