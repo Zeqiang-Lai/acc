@@ -5,9 +5,11 @@
 #ifndef ACC_DEBUG_H
 #define ACC_DEBUG_H
 
+#include <cstdarg>
+#include <map>
 #include "ast.h"
 #include "visitor.h"
-#include <map>
+
 
 class ASTPrinter : public Visitor {
 public:
