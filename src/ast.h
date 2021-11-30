@@ -18,24 +18,27 @@ public:
     Span span;
 public:
     Node(const Span &span) : span(span) {}
+
     Node() {}
-    virtual void accept(Visitor* visitor) = 0;
+
+    virtual void accept(Visitor *visitor) = 0;
 };
 
 // region Expression:
 
 class Expr : public Node {
 public:
-    void accept(Visitor* visitor) override = 0;
+    void accept(Visitor *visitor) override = 0;
 };
 
 class Identifier : public Expr {
 public:
     string name;
-    Type* type;
+    Type *type;
 public:
     Identifier(const string &name) : name(name) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 };
 
 class Integer : public Expr {
@@ -43,7 +46,8 @@ public:
     int number;
 public:
     Integer(int number) : number(number) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -66,7 +70,8 @@ public:
     Expr *array, *index;
 
     ArrayRef(Expr *array, Expr *index) : array(array), index(index) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -76,7 +81,8 @@ public:
     vector<Expr *> args;
 
     FunCall(Expr *func, const vector<Expr *> &args) : func(func), args(args) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -94,7 +100,8 @@ public:
     UnaryOp op;
 
     Unary(Expr *operand, UnaryOp op) : operand(operand), op(op) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -119,7 +126,8 @@ public:
     BinaryOp op;
 
     Binary(Expr *lhs, Expr *rhs, BinaryOp op) : lhs(lhs), rhs(rhs), op(op) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -136,7 +144,8 @@ public:
     Expr *lvalue, *rvalue;
 
     Assignment(Expr *lvalue, Expr *rvalue) : lvalue(lvalue), rvalue(rvalue) {}
-    void accept(Visitor* visitor) override {visitor->visit(this);}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
@@ -145,8 +154,8 @@ public:
 
 // region Statement
 
-class Stmt : public Node{
-    void accept(Visitor* visitor) override {}
+class Stmt : public Node {
+    void accept(Visitor *visitor) override {}
 };
 
 class CompoundStmt;
@@ -163,14 +172,13 @@ class JumpStmt;
 
 class Decl : public Node {
 public:
-    Identifier* id;
-    Expr* initializer;
+    Identifier *id;
+    Expr *initializer;
 public:
     Decl(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
 };
 
-
-class FuncDef : public Node{
+class FuncDef : public Node {
 public:
     Identifier *id;
     CompoundStmt *body;

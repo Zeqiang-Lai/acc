@@ -40,7 +40,7 @@ void ASTPrinter::visit(FunCall *node) {
 
     print("Args");
     indent();
-    for(auto arg : node->args) {
+    for (auto arg: node->args) {
         arg->accept(this);
     }
     deindent();

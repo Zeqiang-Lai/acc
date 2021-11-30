@@ -41,28 +41,28 @@ protected:
 };
 
 static std::map<BinaryOp, string> binaryOp2string = {
-        {BinaryOp::Plus, "+"},
-        {BinaryOp::Minus, "-"},
-        {BinaryOp::Multiply, "*"},
-        {BinaryOp::Divide, "/"},
-        {BinaryOp::Modulo, "%"},
-        {BinaryOp::Less, "<"},
-        {BinaryOp::Greater, ">"},
-        {BinaryOp::LessOrEqual, "<="},
+        {BinaryOp::Plus,           "+"},
+        {BinaryOp::Minus,          "-"},
+        {BinaryOp::Multiply,       "*"},
+        {BinaryOp::Divide,         "/"},
+        {BinaryOp::Modulo,         "%"},
+        {BinaryOp::Less,           "<"},
+        {BinaryOp::Greater,        ">"},
+        {BinaryOp::LessOrEqual,    "<="},
         {BinaryOp::GreaterOrEqual, ">="},
-        {BinaryOp::Equals, "=="},
-        {BinaryOp::NotEquals, "!="},
-        {BinaryOp::LogicalAnd, "&&"},
-        {BinaryOp::LogicalOr, "||"},
+        {BinaryOp::Equals,         "=="},
+        {BinaryOp::NotEquals,      "!="},
+        {BinaryOp::LogicalAnd,     "&&"},
+        {BinaryOp::LogicalOr,      "||"},
 };
 
 static std::map<UnaryOp, string> unaryOp2string = {
         {UnaryOp::Complement, "^"},
-        {UnaryOp::Not, "!"},
-        {UnaryOp::Pointer, "*"},
-        {UnaryOp::Address, "&"},
-        {UnaryOp::Positive, "+"},
-        {UnaryOp::Negative, "-"},
+        {UnaryOp::Not,        "!"},
+        {UnaryOp::Pointer,    "*"},
+        {UnaryOp::Address,    "&"},
+        {UnaryOp::Positive,   "+"},
+        {UnaryOp::Negative,   "-"},
 };
 
 #endif //ACC_DEBUG_H

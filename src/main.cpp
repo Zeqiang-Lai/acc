@@ -15,10 +15,10 @@ public:
     string input_path;
     string output_path;
 
-    int parse(int argc, char* argv[]) { 
-        for (int i=1; i<argc; ++i) {
+    int parse(int argc, char *argv[]) {
+        for (int i = 1; i < argc; ++i) {
             auto arg = string(argv[i]);
-            if (arg == "-o")  output_path = string(argv[++i]);
+            if (arg == "-o") output_path = string(argv[++i]);
             else input_path = string(argv[i]);
         }
 
@@ -26,7 +26,7 @@ public:
     }
 };
 
-string read_file(const string& file_path) {
+string read_file(const string &file_path) {
     ifstream input;
     input.open(file_path);
 
@@ -45,34 +45,34 @@ string read_file(const string& file_path) {
 void check_status(int status) {
     if (status != 0) {
         exit(status);
-    } 
+    }
 }
 
-int compile(const string& code, CmdOptions options) {
+int compile(const string &code, CmdOptions options) {
     Lexer lexer(code);
     vector<Token> tokens;
     while (true) {
         Token token = lexer.lex();
         tokens.push_back(token);
-        if(token.type == TokenType::END) break;
+        if (token.type == TokenType::END) break;
     }
-    for(const auto& token : tokens) {
+    for (const auto &token: tokens) {
         cout << token << endl;
     }
     Parser parser(tokens);
     auto unit = parser.parse();
     ASTPrinter printer;
-    for(auto node : unit->declarations) {
+    for (auto node: unit->declarations) {
         printer.print(node);
     }
     return 0;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     CmdOptions options;
     int status = options.parse(argc, argv);
     check_status(status);
-    
+
     string code = read_file(options.input_path);
 
     status = compile(code, options);

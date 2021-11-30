@@ -4,7 +4,7 @@
 #include "token.h"
 
 void Lexer::skip_whitespace() {
-    while (match(' ') || match('\t')  || match('\r') || match('\n'));
+    while (match(' ') || match('\t') || match('\r') || match('\n'));
 }
 
 void Lexer::skip_comment() {
@@ -24,17 +24,23 @@ void Lexer::skip_comment() {
 
 Token Lexer::character() {
     char ch = next();
-    if(ch == '\\') {
-        switch(next()) {
-            case 'n': ch = '\n'; break;
-            case 't': ch = '\t'; break;
-            case '\\': ch = '\\'; break;
+    if (ch == '\\') {
+        switch (next()) {
+            case 'n':
+                ch = '\n';
+                break;
+            case 't':
+                ch = '\t';
+                break;
+            case '\\':
+                ch = '\\';
+                break;
             default:
                 cerr << "invalid escaped character" << endl;
                 break;
         }
         expect('\'');
-    }else {
+    } else {
         expect('\'');
     }
     return Token(TokenType::CHAR_CONST, ch);
@@ -83,6 +89,7 @@ Token Lexer::lex() {
     skip_comment();
     skip_whitespace();
 
+    //@formatter:off
     switch (next()) {
         case '>': return make_token(match('=') ? TokenType::GEQ : TokenType::GT);
         case '<': return make_token(match('=') ? TokenType::LEQ : TokenType::LT);
@@ -119,6 +126,7 @@ Token Lexer::lex() {
         case '\0': return make_token(TokenType::END);
         default: return make_token(TokenType::INVALID);
     }
+    //@formatter:on
 }
 
 char Lexer::peek() {
@@ -146,7 +154,7 @@ bool Lexer::match(char target) {
 }
 
 void Lexer::expect(char target) {
-    if(!match(target))
+    if (!match(target))
         cerr << "expect " << target << endl;
 }
 

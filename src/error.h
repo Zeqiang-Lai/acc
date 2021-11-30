@@ -7,7 +7,7 @@
 
 #include <string>
 
-void internal_error(const std::string& msg) {
+void internal_error(const std::string &msg) {
     printf("%s", msg.c_str());
     exit(-1);
 }

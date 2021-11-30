@@ -31,6 +31,7 @@ enum class TokenType : unsigned {
 
 };
 
+//@formatter:off
 class Token {
 public:
     TokenType type;
@@ -48,6 +49,7 @@ public:
 
     friend std::ostream &operator<<(std::ostream &out, const Token &token);
 };
+//@formatter:on
 
 static map<string, TokenType> keywordmap = {
         {"int",      TokenType::INT},
@@ -62,7 +64,7 @@ static map<string, TokenType> keywordmap = {
         {"return",   TokenType::RETURN},
         {"break",    TokenType::BREAK},
         {"continue", TokenType::CONTINUE},
-        {"struct", TokenType::STRUCT},
+        {"struct",   TokenType::STRUCT},
 };
 
 static map<TokenType, string> tokentype2string = {
@@ -119,7 +121,7 @@ static map<TokenType, string> tokentype2string = {
         {TokenType::RETURN,       "RETURN"},
         {TokenType::BREAK,        "BREAK"},
         {TokenType::CONTINUE,     "CONTINUE"},
-        {TokenType::STRUCT,     "STRUCT"},
+        {TokenType::STRUCT,       "STRUCT"},
         {TokenType::INVALID,      "INVALID"},
         {TokenType::END,          "END"},
 };

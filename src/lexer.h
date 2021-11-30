@@ -9,6 +9,7 @@
 
 using namespace std;
 
+//@formatter:off
 class Lexer {
 public:
     explicit Lexer(const string& code) : code(code), idx(0) {}
@@ -34,5 +35,6 @@ private:
 
     Token make_token(TokenType type);
 };
+//@formatter:on
 
 #endif
