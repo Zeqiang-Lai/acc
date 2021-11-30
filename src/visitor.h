@@ -14,6 +14,10 @@ class Cast;
 class Binary;
 class Assignment;
 
+class CompoundStmt;
+class ExprStmt;
+class IfStmt;
+
 class Visitor {
 public:
     //@formatter:off
@@ -26,6 +30,10 @@ public:
     virtual void visit(Cast *node) {};
     virtual void visit(Binary *node) {};
     virtual void visit(Assignment *node) {};
+
+    virtual void visit(CompoundStmt* node) {};
+    virtual void visit(ExprStmt* node) {};
+    virtual void visit(IfStmt* node) {};
     //@formatter:on
 };
 

@@ -158,13 +158,39 @@ class Stmt : public Node {
     void accept(Visitor *visitor) override {}
 };
 
-class CompoundStmt;
+class CompoundStmt : public Stmt {
+public:
+    std::vector<Stmt *> items;
 
-class ExprStmt;
+    CompoundStmt(const vector<Stmt *> &items) : items(items) {}
 
-class IfStmt;
+    void accept(Visitor *visitor) override { visitor->visit(this); }
+};
 
-class IterationStmt;
+class ExprStmt : public Stmt {
+public:
+    Expr* expr;
+
+    ExprStmt(Expr *expr) : expr(expr) {}
+    void accept(Visitor *visitor) override { visitor->visit(this); }
+
+};
+
+class IfStmt : public Stmt{
+public:
+    Expr* cond;
+    CompoundStmt* thenbody;
+    CompoundStmt* elsebody;
+
+    IfStmt(Expr *cond, CompoundStmt *thenbody, CompoundStmt *elsebody) : cond(cond), thenbody(thenbody),
+                                                                         elsebody(elsebody) {}
+    void accept(Visitor *visitor) override { visitor->visit(this); }
+
+};
+
+class IterationStmt {
+
+};
 
 class JumpStmt;
 
@@ -185,6 +211,7 @@ public:
 public:
     FuncDef(Identifier *id, CompoundStmt *body) : id(id), body(body) {}
 };
+
 
 class TranslationUnit {
 public:
