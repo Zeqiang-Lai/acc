@@ -24,6 +24,10 @@ public:
     void visit(Binary *node) override;
     void visit(Assignment *node) override;
 
+    void visit(CompoundStmt *node) override;
+    void visit(ExprStmt *node) override;
+    void visit(IfStmt *node) override;
+
 protected:
     int indent_level = 0;
     void indent() { indent_level += 1; }

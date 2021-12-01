@@ -74,3 +74,43 @@ void ASTPrinter::visit(Assignment *node) {
     node->rvalue->accept(this);
     deindent();
 }
+
+void ASTPrinter::visit(CompoundStmt *node) {
+    print("CompoundStmt");
+    indent();
+    for(auto stmt : node->items) {
+        stmt->accept(this);
+    }
+    deindent();
+}
+
+void ASTPrinter::visit(ExprStmt *node) {
+    print("ExprStmt");
+    indent();
+    node->expr->accept(this);
+    deindent();
+}
+
+void ASTPrinter::visit(IfStmt *node) {
+    print("IfStmt");
+    indent();
+
+    print("Cond");
+    indent();
+    node->cond->accept(this);
+    deindent();
+
+    print("thenBody");
+    indent();
+    node->thenbody->accept(this);
+    deindent();
+
+    if(node->elsebody != nullptr) {
+        print("elseBody");
+        indent();
+        node->elsebody->accept(this);
+        deindent();
+    }
+
+    deindent();
+}

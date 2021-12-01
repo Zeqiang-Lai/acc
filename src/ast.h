@@ -155,6 +155,7 @@ public:
 // region Statement
 
 class Stmt : public Node {
+public:
     void accept(Visitor *visitor) override {}
 };
 
