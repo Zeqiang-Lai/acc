@@ -22,7 +22,7 @@ TranslationUnit *Parser::parse() {
 //        } while (match(TokenType::COMMA));
 //    }
     while (!match(TokenType::END)) {
-        declarations.push_back(parseExpr());
+        declarations.push_back(parseStmt());
     }
     return new TranslationUnit(declarations);
 }
@@ -80,7 +80,7 @@ Type *Parser::parseStructDeclarationList(Token *id) {
 Token Parser::consume(TokenType type) {
     auto token = tokens[index];
     if (tokens[index].type == type) {
-        index++;
+        next();
         return token;
     } else {
         std::cerr << "expect " << tokentype2string[type] << std::endl;
@@ -90,7 +90,7 @@ Token Parser::consume(TokenType type) {
 
 bool Parser::match(TokenType type) {
     if (tokens[index].type == type) {
-        index++;
+        next();
         return true;
     }
     return false;
@@ -101,7 +101,9 @@ Token Parser::peek() {
 }
 
 Token Parser::next() {
-    return tokens[index++];
+    auto token = tokens[index];
+    index = std::min(index + 1, int(tokens.size()));
+    return token;
 }
 
 Node *Parser::parseFuncOrVariable(Type *baseType) {
@@ -331,6 +333,46 @@ Expr *Parser::parsePrimaryExpr() {
 
 Identifier *Parser::parseIdentifier() {
     return nullptr;
+}
+
+Stmt *Parser::parseStmt() {
+    switch (peek().type) {
+        case TokenType::IF:
+            return parseIfStmt();
+        case TokenType::LBRACE:
+            return parseCompoundStmt();
+        default:
+            return parseExprStmt();
+    }
+}
+
+Stmt *Parser::parseIfStmt() {
+    consume(TokenType::IF);
+    consume(TokenType::LPAREN);
+    Expr *cond = parseExpr();
+    consume(TokenType::RPAREN);
+    CompoundStmt *thenbody = parseCompoundStmt();
+    CompoundStmt *elsebody = nullptr;
+    if (peek().type == TokenType::ELSE) {
+        next();
+        elsebody = parseCompoundStmt();
+    }
+    return new IfStmt(cond, thenbody, elsebody);
+}
+
+CompoundStmt *Parser::parseCompoundStmt() {
+    consume(TokenType::LBRACE);
+    vector<Stmt *> items;
+    while (!match(TokenType::RBRACE) && !match(TokenType::END)) {
+        items.push_back(parseStmt());
+    }
+    return new CompoundStmt(items);
+}
+
+Stmt *Parser::parseExprStmt() {
+    Expr *expr = parseExpr();
+    consume(TokenType::SEMICOLON);
+    return new ExprStmt(expr);
 }
 
 

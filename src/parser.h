@@ -24,8 +24,8 @@ protected:
 protected:
     Token consume(TokenType type);
     bool match(TokenType type);
-    Token peek();
-    Token next();
+    inline Token peek();
+    inline Token next();
 
 protected:
     const vector<Token> &tokens;
@@ -58,6 +58,11 @@ protected:
     inline static bool isAdditiveOp(TokenType type);
     inline static bool isMultiplicativeOp(TokenType type);
     inline static bool isAssignOp(TokenType type);
+
+    Stmt *parseStmt();
+    Stmt *parseIfStmt();
+    CompoundStmt * parseCompoundStmt();
+    Stmt *parseExprStmt();
 };
 // @formatter:on
 
