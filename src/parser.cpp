@@ -22,7 +22,7 @@ TranslationUnit *Parser::parse() {
 //        } while (match(TokenType::COMMA));
 //    }
     while (!match(TokenType::END)) {
-        declarations.push_back(parseStmt());
+        declarations.push_back(parseFuncOrVariable());
     }
     return new TranslationUnit(declarations);
 }
@@ -73,6 +73,40 @@ Type *Parser::parseStructDeclarationList(Token *id) {
     return nullptr;
 }
 
+Node *Parser::parseFuncOrVariable() {
+    Type *type = parseTypeSpecifier();
+    Identifier *id = parseIdentifier();
+
+    // if start with '(', it is function
+    if (match(TokenType::LPAREN)) {
+        vector<Identifier *> params;
+        while (!match(TokenType::RPAREN)) {
+            auto paramType = parseTypeSpecifier();
+            auto paramID = parseIdentifier();
+            paramID->type = paramType;
+            params.push_back(paramID);
+        }
+        CompoundStmt* body = parseCompoundStmt();
+        return new FuncDef(id, type, params, body);
+    }
+
+    // array definition
+    if (match(TokenType::LBRACKET)) {
+        // TODO
+    }
+
+    // initializer
+    Expr *init = nullptr;
+    if (match(TokenType::ASSIGN)) {
+        init = parseExpr();
+    }
+
+    consume(TokenType::SEMICOLON);
+
+    id->type = type;
+    return new Decl(id, init);
+}
+
 // endregion
 
 // region Utils
@@ -106,26 +140,10 @@ Token Parser::next() {
     return token;
 }
 
-Node *Parser::parseFuncOrVariable(Type *baseType) {
-    Identifier *id = parseIdentifier();
-
-    // if start with '(', it is function
-    if (match(TokenType::LPAREN)) {
-        while (!match(TokenType::RPAREN)) {
-            auto paramType = parseTypeSpecifier();
-            auto paramID = parseIdentifier();
-        }
-        return nullptr;
-    }
-
-    // array definition
-    if (match(TokenType::LBRACKET)) {
-
-    }
+// endregion
 
 
-    return nullptr;
-}
+// region Expr
 
 Expr *Parser::parseExpr() {
     return parseAssignExpr();
@@ -332,8 +350,15 @@ Expr *Parser::parsePrimaryExpr() {
 }
 
 Identifier *Parser::parseIdentifier() {
-    return nullptr;
+    auto token = peek();
+    consume(TokenType::ID);
+    return new Identifier(token.string_value);
 }
+
+// endregion
+
+
+// region stmt
 
 Stmt *Parser::parseStmt() {
     switch (peek().type) {
@@ -362,7 +387,7 @@ Stmt *Parser::parseIfStmt() {
 
 CompoundStmt *Parser::parseCompoundStmt() {
     consume(TokenType::LBRACE);
-    vector<Stmt *> items;
+    vector<Node *> items;
     while (!match(TokenType::RBRACE) && !match(TokenType::END)) {
         items.push_back(parseStmt());
     }
@@ -375,6 +400,7 @@ Stmt *Parser::parseExprStmt() {
     return new ExprStmt(expr);
 }
 
+// endregion
 
 
 

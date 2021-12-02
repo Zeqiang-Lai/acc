@@ -18,6 +18,9 @@ class CompoundStmt;
 class ExprStmt;
 class IfStmt;
 
+class Decl;
+class FuncDef;
+
 class Visitor {
 public:
     //@formatter:off
@@ -34,6 +37,9 @@ public:
     virtual void visit(CompoundStmt* node) {};
     virtual void visit(ExprStmt* node) {};
     virtual void visit(IfStmt* node) {};
+
+    virtual void visit(Decl* node) {};
+    virtual void visit(FuncDef* node) {};
     //@formatter:on
 };
 

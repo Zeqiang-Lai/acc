@@ -31,7 +31,7 @@ protected:
     const vector<Token> &tokens;
     int index;
 
-    Node *parseFuncOrVariable(Type *baseType);
+    Node *parseFuncOrVariable();
 
     Identifier *parseIdentifier();
 

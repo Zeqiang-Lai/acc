@@ -28,6 +28,8 @@ public:
     void visit(ExprStmt *node) override;
     void visit(IfStmt *node) override;
 
+    void visit(Decl *node) override;void visit(FuncDef *node) override;
+
 protected:
     int indent_level = 0;
     void indent() { indent_level += 1; }

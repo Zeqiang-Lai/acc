@@ -161,30 +161,32 @@ public:
 
 class CompoundStmt : public Stmt {
 public:
-    std::vector<Stmt *> items;
+    std::vector<Node *> items;
 
-    CompoundStmt(const vector<Stmt *> &items) : items(items) {}
+    CompoundStmt(const vector<Node *> &items) : items(items) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
 
 class ExprStmt : public Stmt {
 public:
-    Expr* expr;
+    Expr *expr;
 
     ExprStmt(Expr *expr) : expr(expr) {}
+
     void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
 
-class IfStmt : public Stmt{
+class IfStmt : public Stmt {
 public:
-    Expr* cond;
-    CompoundStmt* thenbody;
-    CompoundStmt* elsebody;
+    Expr *cond;
+    CompoundStmt *thenbody;
+    CompoundStmt *elsebody;
 
     IfStmt(Expr *cond, CompoundStmt *thenbody, CompoundStmt *elsebody) : cond(cond), thenbody(thenbody),
                                                                          elsebody(elsebody) {}
+
     void accept(Visitor *visitor) override { visitor->visit(this); }
 
 };
@@ -203,14 +205,23 @@ public:
     Expr *initializer;
 public:
     Decl(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 };
 
 class FuncDef : public Node {
 public:
     Identifier *id;
     CompoundStmt *body;
+    vector<Identifier *> params;
+    Type *returnType;
 public:
-    FuncDef(Identifier *id, CompoundStmt *body) : id(id), body(body) {}
+    FuncDef(Identifier *id, Type *returnType,
+            const vector<Identifier *> &params,
+            CompoundStmt *body) : id(id), returnType(returnType), params(params),
+                                  body(body) {}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
 };
 
 

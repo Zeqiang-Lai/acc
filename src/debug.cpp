@@ -114,3 +114,40 @@ void ASTPrinter::visit(IfStmt *node) {
 
     deindent();
 }
+
+void ASTPrinter::visit(Decl *node) {
+    print("Decl");
+    indent();
+
+    print("Name(%s)", node->id->name.c_str());
+
+    if(node->initializer != nullptr) {
+        print("Init");
+        indent();
+        node->initializer->accept(this);
+        deindent();
+    }
+
+    deindent();
+}
+
+void ASTPrinter::visit(FuncDef *node) {
+    print("FuncDef");
+    indent();
+
+    print("Name(%s)", node->id->name.c_str());
+
+    print("Params");
+    indent();
+    for(auto param : node->params) {
+        print("Param(%s)", param->name.c_str());
+    }
+    deindent();
+
+    print("Body");
+    indent();
+    node->body->accept(this);
+    deindent();
+
+    deindent();
+}
