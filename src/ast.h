@@ -22,6 +22,7 @@ public:
     Node() {}
 
     virtual void accept(Visitor *visitor) = 0;
+
 };
 
 // region Expression:
@@ -188,7 +189,6 @@ public:
                                                                          elsebody(elsebody) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
-
 };
 
 class IterationStmt {
