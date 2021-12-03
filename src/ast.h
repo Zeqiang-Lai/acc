@@ -197,6 +197,15 @@ class IterationStmt {
 
 class JumpStmt;
 
+class ReturnStmt : public Stmt {
+public:
+    Expr *value;
+
+    ReturnStmt(Expr *value) : value(value) {}
+
+    void accept(Visitor *visitor) override { visitor->visit(this); }
+};
+
 // endregion
 
 class Decl : public Node {

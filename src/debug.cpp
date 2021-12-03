@@ -151,3 +151,12 @@ void ASTPrinter::visit(FuncDef *node) {
 
     deindent();
 }
+
+void ASTPrinter::visit(ReturnStmt *node) {
+    print("ReturnStmt");
+    indent();
+    if(node->value != nullptr) {
+        node->value->accept(this);
+    }
+    deindent();
+}

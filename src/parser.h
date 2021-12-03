@@ -63,6 +63,7 @@ protected:
     Stmt *parseIfStmt();
     CompoundStmt * parseCompoundStmt();
     Stmt *parseExprStmt();
+Stmt *parseReturnStmt();
 };
 // @formatter:on
 

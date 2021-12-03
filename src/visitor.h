@@ -17,6 +17,7 @@ class Assignment;
 class CompoundStmt;
 class ExprStmt;
 class IfStmt;
+class ReturnStmt;
 
 class Decl;
 class FuncDef;
@@ -37,6 +38,7 @@ public:
     virtual void visit(CompoundStmt* node) {};
     virtual void visit(ExprStmt* node) {};
     virtual void visit(IfStmt* node) {};
+    virtual void visit(ReturnStmt* node) {};
 
     virtual void visit(Decl* node) {};
     virtual void visit(FuncDef* node) {};

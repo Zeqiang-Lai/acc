@@ -86,7 +86,7 @@ Node *Parser::parseFuncOrVariable() {
             paramID->type = paramType;
             params.push_back(paramID);
         }
-        CompoundStmt* body = parseCompoundStmt();
+        CompoundStmt *body = parseCompoundStmt();
         return new FuncDef(id, type, params, body);
     }
 
@@ -366,6 +366,8 @@ Stmt *Parser::parseStmt() {
             return parseIfStmt();
         case TokenType::LBRACE:
             return parseCompoundStmt();
+        case TokenType::RETURN:
+            return parseReturnStmt();
         default:
             return parseExprStmt();
     }
@@ -398,6 +400,16 @@ Stmt *Parser::parseExprStmt() {
     Expr *expr = parseExpr();
     consume(TokenType::SEMICOLON);
     return new ExprStmt(expr);
+}
+
+Stmt *Parser::parseReturnStmt() {
+    next();
+    Expr *value = nullptr;
+    if (peek().type != TokenType::SEMICOLON) {
+        value = parseExpr();
+    }
+    consume(TokenType::SEMICOLON);
+    return new ReturnStmt(value);
 }
 
 // endregion
