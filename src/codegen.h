@@ -43,13 +43,29 @@ public:
     void visit(Decl *node) override;
     void visit(FuncDef *node) override;
 //@formatter:on
+
 protected:
-    llvm::Value *tmp;
-    llvm::Value* emit(Node* node) {
+    llvm::Value *tmp = nullptr;
+
+    llvm::Value *emit(Node *node) {
         node->accept(this);
         return tmp;
     }
 
+protected:
+    std::unique_ptr<llvm::LLVMContext> context;
+    std::unique_ptr<llvm::IRBuilder<>> builder;
+    std::unique_ptr<llvm::Module> module;
+
+public:
+    explicit LLVMEmitter(const string &module_name) {
+        // Open a new context and module.
+        context = std::make_unique<llvm::LLVMContext>();
+        module = std::make_unique<llvm::Module>(module_name, *context);
+
+        // Create a new builder for the module.
+        builder = std::make_unique<llvm::IRBuilder<>>(*context);
+    }
 };
 
 #endif //ACC_CODEGEN_H

@@ -57,9 +57,14 @@ void LLVMEmitter::visit(Decl *node) {
 }
 
 void LLVMEmitter::visit(FuncDef *node) {
-    Visitor::visit(node);
+    llvm::Function *func = module->getFunction(node->id->name);
+    llvm::BasicBlock *BB = llvm::BasicBlock::Create(*context, "entry", func);
+    builder->SetInsertPoint(BB);
+
 }
 
 void LLVMEmitter::visit(TranslationUnit *node) {
-    Visitor::visit(node);
+    for (auto decl: node->declarations) {
+        emit(decl);
+    }
 }
