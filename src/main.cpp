@@ -65,7 +65,7 @@ int compile(const string &code, CmdOptions options) {
     printer.visit(unit);
 
     // TODO: semantic analyze
-    LLVMEmitter emitter;
+    LLVMEmitter emitter("");
 
     return 0;
 }
