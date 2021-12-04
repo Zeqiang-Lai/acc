@@ -5,6 +5,8 @@
 #ifndef ACC_VISITOR_H
 #define ACC_VISITOR_H
 
+class TranslationUnit;
+
 class Integer;
 class Identifier;
 class ArrayRef;
@@ -25,6 +27,8 @@ class FuncDef;
 class Visitor {
 public:
     //@formatter:off
+    virtual void visit(TranslationUnit *node) {};
+
     virtual void visit(Integer *node) {};
     virtual void visit(Identifier *node) {};
     virtual void visit(ArrayRef *node) {};

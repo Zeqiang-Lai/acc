@@ -24,6 +24,8 @@
 //@formatter:off232
 class LLVMEmitter : public Visitor{
 public:
+    void visit(TranslationUnit *node) override;
+
     void visit(Integer *node) override;
     void visit(Identifier *node) override;
     void visit(ArrayRef *node) override;

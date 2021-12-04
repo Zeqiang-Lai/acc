@@ -59,3 +59,7 @@ void LLVMEmitter::visit(Decl *node) {
 void LLVMEmitter::visit(FuncDef *node) {
     Visitor::visit(node);
 }
+
+void LLVMEmitter::visit(TranslationUnit *node) {
+    Visitor::visit(node);
+}

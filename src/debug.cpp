@@ -160,3 +160,9 @@ void ASTPrinter::visit(ReturnStmt *node) {
     }
     deindent();
 }
+
+void ASTPrinter::visit(TranslationUnit *node) {
+    for (auto decl: node->declarations) {
+        decl->accept(this);
+    }
+}

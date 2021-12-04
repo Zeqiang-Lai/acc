@@ -15,6 +15,8 @@ class ASTPrinter : public Visitor {
 public:
     //@formatter:off
     void print(Node* node) { node->accept(this); }
+
+    void visit(TranslationUnit *node) override;
     void visit(Integer *node) override;
     void visit(Identifier *node) override;
     void visit(ArrayRef *node) override;

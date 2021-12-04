@@ -5,8 +5,8 @@
 
 #include "lexer.h"
 #include "parser.h"
-#include "ast.h"
 #include "debug.h"
+#include "codegen.h"
 
 using namespace std;
 
@@ -62,9 +62,11 @@ int compile(const string &code, CmdOptions options) {
     Parser parser(tokens);
     auto unit = parser.parse();
     ASTPrinter printer;
-    for (auto node: unit->declarations) {
-        printer.print(node);
-    }
+    printer.visit(unit);
+
+    // TODO: semantic analyze
+    LLVMEmitter emitter;
+
     return 0;
 }
 
