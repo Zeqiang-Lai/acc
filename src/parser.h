@@ -8,30 +8,31 @@
 #include <vector>
 #include "token.h"
 #include "ast.h"
+#include "type.h"
 
 // @formatter:off
 class Parser {
 public:
-    explicit Parser(const vector<Token> &tokens) : tokens(tokens), index(0) {}
+    explicit Parser(const std::vector<Token> &tokens) : tokens(tokens), index(0) {}
 
     TranslationUnit *parse();
 
 protected:
-    Type *parseTypeSpecifier();
-    Type *parseStruct();
-    Type *parseStructDeclarationList(Token* id);
+    const std::vector<Token> &tokens;
+    int index;
 
-protected:
     Token consume(TokenType type);
     bool match(TokenType type);
     inline Token peek();
     inline Token next();
 
 protected:
-    const vector<Token> &tokens;
-    int index;
+    std::map<std::string, Type*> structMap;
 
-    Node *parseFuncOrVariable();
+    Type *parseTypeSpecifier();
+    StructDef *parseStructDef(Type *pType);
+    FuncDef *parseFuncDef(Type *pType);
+    VarDef *parseVarDef(Type *pType);
 
     Identifier *parseIdentifier();
 
@@ -63,7 +64,8 @@ protected:
     Stmt *parseIfStmt();
     CompoundStmt * parseCompoundStmt();
     Stmt *parseExprStmt();
-Stmt *parseReturnStmt();
+    Stmt *parseReturnStmt();
+
 };
 // @formatter:on
 

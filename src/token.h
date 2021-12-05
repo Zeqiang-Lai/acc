@@ -4,8 +4,6 @@
 #include <map>
 #include <string>
 
-using namespace std;
-
 enum class TokenType : unsigned {
     ID,
     LITERAL,
@@ -39,19 +37,19 @@ public:
     int int_value;
     double float_value;
     char char_value;
-    string string_value;
+    std::string string_value;
 
     Token(TokenType type) : type(type) {}
     Token(TokenType type, double float_value) : type(type), float_value(float_value) {}
     Token(TokenType type, int int_value) : type(type), int_value(int_value) {}
     Token(TokenType type, char char_value) : type(type), char_value(char_value) {}
-    Token(TokenType type, string string_value) : type(type), string_value(string_value) {}
+    Token(TokenType type, std::string string_value) : type(type), string_value(string_value) {}
 
     friend std::ostream &operator<<(std::ostream &out, const Token &token);
 };
 //@formatter:on
 
-static map<string, TokenType> keywordmap = {
+static std::map<std::string, TokenType> keywordmap = {
         {"int",      TokenType::INT},
         {"float",    TokenType::FLOAT},
         {"double",   TokenType::DOUBLE},
@@ -67,7 +65,7 @@ static map<string, TokenType> keywordmap = {
         {"struct",   TokenType::STRUCT},
 };
 
-static map<TokenType, string> tokentype2string = {
+static std::map<TokenType, std::string> tokentype2string = {
         {TokenType::ID,           "ID"},
         {TokenType::LITERAL,      "LITERAL"},
         {TokenType::INT_CONST,    "INT_CONST"},

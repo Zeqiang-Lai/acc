@@ -21,7 +21,7 @@ class ExprStmt;
 class IfStmt;
 class ReturnStmt;
 
-class Decl;
+class VarDef;
 class FuncDef;
 
 class Visitor {
@@ -43,7 +43,7 @@ public:
     virtual void visit(IfStmt* node) {};
     virtual void visit(ReturnStmt* node) {};
 
-    virtual void visit(Decl* node) {};
+    virtual void visit(VarDef* node) {};
     virtual void visit(FuncDef* node) {};
     //@formatter:on
 };

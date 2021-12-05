@@ -1,10 +1,14 @@
+
 struct point {
-    int x, y;
+    int x;
+    int y;
 };
 
-int f(int a[]) {
+int f(int a[], struct point y) {
     return 0;
 }
+
+int global_var = 10;
 
 int main()
 {

@@ -52,7 +52,7 @@ void LLVMEmitter::visit(ReturnStmt *node) {
     Visitor::visit(node);
 }
 
-void LLVMEmitter::visit(Decl *node) {
+void LLVMEmitter::visit(VarDef *node) {
     Visitor::visit(node);
 }
 
@@ -64,7 +64,7 @@ void LLVMEmitter::visit(FuncDef *node) {
 }
 
 void LLVMEmitter::visit(TranslationUnit *node) {
-    for (auto decl: node->declarations) {
+    for (auto decl: node->defs) {
         emit(decl);
     }
 }

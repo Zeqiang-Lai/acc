@@ -40,7 +40,7 @@ public:
     void visit(IfStmt *node) override;
     void visit(ReturnStmt *node) override;
 
-    void visit(Decl *node) override;
+    void visit(VarDef *node) override;
     void visit(FuncDef *node) override;
 //@formatter:on
 

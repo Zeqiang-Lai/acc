@@ -27,10 +27,12 @@ public:
 };
 
 class StructType : public Type {
-    std::map<std::string, Type *> fields;
-
 public:
-    StructType(std::map<std::string, Type *> fields) : fields(std::move(fields)) {}
+    std::map<std::string, Type *> fields;
+    std::string &name;
+    bool incomplete;
+
+    StructType(std::string &name) : name(name), incomplete(true) {}
 
     Type *field(const std::string &name) { return fields[name]; }
 };

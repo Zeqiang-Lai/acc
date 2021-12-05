@@ -6,10 +6,16 @@
 #define ACC_ERROR_H
 
 #include <string>
+#include <cstdarg>
 
-void internal_error(const std::string &msg) {
-    printf("%s", msg.c_str());
+void internal_error(const char* fmt, ...) {
+    va_list arg;
+    va_start(arg, fmt);
+    vprintf(fmt, arg);
+    va_end(arg);
+    printf("\n");
     exit(-1);
 }
+
 
 #endif //ACC_ERROR_H

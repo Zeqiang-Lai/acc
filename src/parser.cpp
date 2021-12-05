@@ -7,24 +7,32 @@
 TranslationUnit *Parser::parse() {
     /*
      * Top level:
-     *  StructDeclaration: Type
-     *  FunctionDefinition: Type name(Type x, Type y) { body }
-     *  GlobalVariable: Type x,y,z;
+     *  StructDef: Type
+     *  FuncDef: Type name(Type x, Type y) { body }
+     *  VarDef(global): Type x,y,z;
      */
 
-    vector<Node *> declarations;
-//    while (!match(TokenType::END)) {
-//        Type *declType = parseTypeSpecifier();
-//        if (match(TokenType::SEMICOLON)) { continue; }
-//        do {
-//            Node *declaration = parseFuncOrVariable(declType);
-//            declarations.push_back(declaration);
-//        } while (match(TokenType::COMMA));
-//    }
+    std::vector < Node * > defs;
     while (!match(TokenType::END)) {
-        declarations.push_back(parseFuncOrVariable());
+        Type *baseType = parseTypeSpecifier();
+        if (match(TokenType::SEMICOLON)) { continue; } // incomplete def
+        do {
+            Node *def;
+            switch (peek().type) {
+                case TokenType::LBRACE:
+                    def = parseStructDef(baseType);
+                    break;
+                case TokenType::LPAREN:
+                    def = parseFuncDef(baseType);
+                    break;
+                default:
+                    def = parseVarDef(baseType);
+                    break;
+            }
+            defs.push_back(def);
+        } while (match(TokenType::COMMA));
     }
-    return new TranslationUnit(declarations);
+    return new TranslationUnit(defs);
 }
 
 // region: Declaration
@@ -40,36 +48,28 @@ Type *Parser::parseTypeSpecifier() {
             return &PrimitiveType::Char;
         case TokenType::DOUBLE:
             return &PrimitiveType::Double;
-        case TokenType::STRUCT:
-            return parseStruct();
-        case TokenType::ID:
-            // unknown type name '#'
-            break;
-        default:
-            // expect external declaration
-            break;
     }
-}
-
-Type *Parser::parseStruct() {
-    Token token = next();
-    if (token.type == TokenType::ID) {
-        if (peek().type == TokenType::LBRACE) {
-            // definition
-            next();
-            return parseStructDeclarationList(&token);
-        } else {
-            // declaration of struct
+    if (token.type == TokenType::STRUCT) {
+        auto id = consume(TokenType::ID);
+        if (!structMap.contains(id.string_value)) {
+            structMap[id.string_value] = new StructType(id.string_value);
         }
-    } else if (token.type == TokenType::LBRACE) {
-        // anonymous struct
-        return parseStructDeclarationList(nullptr);
+        return structMap[id.string_value];
+    } else {
+        // expect external declaration
+        internal_error("expect type specifier");
     }
-    // error: Declaration of anonymous struct must be a definition
 }
 
-Type *Parser::parseStructDeclarationList(Token *id) {
+StructDef *Parser::parseStructDef(Type *pType) {
+    return nullptr;
+}
 
+FuncDef *Parser::parseFuncDef(Type *pType) {
+    return nullptr;
+}
+
+VarDef *Parser::parseVarDef(Type *pType) {
     return nullptr;
 }
 
@@ -79,7 +79,7 @@ Node *Parser::parseFuncOrVariable() {
 
     // if start with '(', it is function
     if (match(TokenType::LPAREN)) {
-        vector<Identifier *> params;
+        vector < Identifier * > params;
         while (!match(TokenType::RPAREN)) {
             auto paramType = parseTypeSpecifier();
             auto paramID = parseIdentifier();
@@ -104,7 +104,7 @@ Node *Parser::parseFuncOrVariable() {
     consume(TokenType::SEMICOLON);
 
     id->type = type;
-    return new Decl(id, init);
+    return new VarDef(id, init);
 }
 
 // endregion
@@ -320,7 +320,7 @@ Expr *Parser::parsePostfixExpr() {
     }
     if (token.type == TokenType::LPAREN) {
         next();
-        vector<Expr *> args;
+        vector < Expr * > args;
         if (peek().type != TokenType::RPAREN) {
             do {
                 args.push_back(parseExpr());
@@ -389,7 +389,7 @@ Stmt *Parser::parseIfStmt() {
 
 CompoundStmt *Parser::parseCompoundStmt() {
     consume(TokenType::LBRACE);
-    vector<Node *> items;
+    vector < Node * > items;
     while (!match(TokenType::RBRACE) && !match(TokenType::END)) {
         items.push_back(parseStmt());
     }
@@ -411,6 +411,9 @@ Stmt *Parser::parseReturnStmt() {
     consume(TokenType::SEMICOLON);
     return new ReturnStmt(value);
 }
+
+
+
 
 // endregion
 

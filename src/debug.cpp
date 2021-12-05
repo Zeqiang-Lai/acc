@@ -115,8 +115,8 @@ void ASTPrinter::visit(IfStmt *node) {
     deindent();
 }
 
-void ASTPrinter::visit(Decl *node) {
-    print("Decl");
+void ASTPrinter::visit(VarDef *node) {
+    print("VarDef");
     indent();
 
     print("Name(%s)", node->id->name.c_str());
@@ -162,7 +162,7 @@ void ASTPrinter::visit(ReturnStmt *node) {
 }
 
 void ASTPrinter::visit(TranslationUnit *node) {
-    for (auto decl: node->declarations) {
+    for (auto decl: node->defs) {
         decl->accept(this);
     }
 }

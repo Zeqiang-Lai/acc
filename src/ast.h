@@ -11,8 +11,6 @@
 #include "type.h"
 #include "visitor.h"
 
-using namespace std;
-
 class Node {
 public:
     Span span;
@@ -29,15 +27,17 @@ public:
 
 class Expr : public Node {
 public:
+    Type *evalType;
+public:
     void accept(Visitor *visitor) override = 0;
 };
 
 class Identifier : public Expr {
 public:
-    string name;
-    Type *type;
+    std::string name;
+    Node *def;
 public:
-    Identifier(const string &name) : name(name) {}
+    Identifier(const std::string &name) : name(name), def(nullptr) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
@@ -79,9 +79,9 @@ public:
 class FunCall : public Expr {
 public:
     Expr *func;
-    vector<Expr *> args;
+    std::vector<Expr *> args;
 
-    FunCall(Expr *func, const vector<Expr *> &args) : func(func), args(args) {}
+    FunCall(Expr *func, const std::vector<Expr *> &args) : func(func), args(args) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 
@@ -164,7 +164,7 @@ class CompoundStmt : public Stmt {
 public:
     std::vector<Node *> items;
 
-    CompoundStmt(const vector<Node *> &items) : items(items) {}
+    CompoundStmt(const std::vector<Node *> &items) : items(items) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
@@ -208,12 +208,12 @@ public:
 
 // endregion
 
-class Decl : public Node {
+class VarDef : public Node {
 public:
     Identifier *id;
     Expr *initializer;
 public:
-    Decl(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
+    VarDef(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
@@ -222,13 +222,15 @@ class FuncDef : public Node {
 public:
     Identifier *id;
     CompoundStmt *body;
-    vector<Identifier *> params;
+    std::vector<Identifier *> params;
     Type *returnType;
 public:
     FuncDef(Identifier *id, Type *returnType,
-            const vector<Identifier *> &params,
+            const std::vector<Identifier *> &params,
             CompoundStmt *body) : id(id), returnType(returnType), params(params),
-                                  body(body) {}
+                                  body(body) {
+
+    }
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
@@ -236,9 +238,9 @@ public:
 
 class TranslationUnit {
 public:
-    vector<Node *> declarations;
+    std::vector<Node *> defs;
 public:
-    explicit TranslationUnit(const vector<Node *> &declarations) : declarations(declarations) {}
+    explicit TranslationUnit(const std::vector<Node *> &defs) : defs(defs) {}
 };
 
 #endif //ACC_AST_H
