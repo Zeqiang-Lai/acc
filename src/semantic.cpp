@@ -3,7 +3,6 @@
 //
 
 #include "semantic.h"
-#include "error.h"
 
 void SemanticAnalyzer::visit(TranslationUnit *node) {
     for(auto decl : node->defs) {

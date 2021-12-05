@@ -17,3 +17,5 @@ sudo apt-get install zlib1g zlib1g-dev
 ## Reference
 
 1. Constant Folding: https://www.zhihu.com/question/55976094/answer/147302764
+2. Code Style: https://www.zhihu.com/question/470324696/answer/2247033371
+3. LLVM Book: https://www.zhihu.com/question/28513400/answer/1693055094

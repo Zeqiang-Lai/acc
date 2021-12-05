@@ -27,12 +27,13 @@ protected:
     inline Token next();
 
 protected:
-    std::map<std::string, Type*> structMap;
+    std::map<std::string, StructType*> structMap;
+    std::map<std::string, FuncDef*> funcMap;
 
     Type *parseTypeSpecifier();
-    StructDef *parseStructDef(Type *pType);
-    FuncDef *parseFuncDef(Type *pType);
-    VarDef *parseVarDef(Type *pType);
+    void parseStructDef(StructType *baseType);
+    FuncDef *parseFuncDef(Type *returnType, const Token& id);
+    VarDef *parseVarDef(Type *baseType, const Token& id);
 
     Identifier *parseIdentifier();
 
@@ -60,7 +61,6 @@ protected:
     inline static bool isMultiplicativeOp(TokenType type);
     inline static bool isAssignOp(TokenType type);
 
-    Stmt *parseStmt();
     Stmt *parseIfStmt();
     CompoundStmt * parseCompoundStmt();
     Stmt *parseExprStmt();

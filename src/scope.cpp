@@ -4,14 +4,14 @@
 
 #include "scope.h"
 
-void Scope::define(const string &name, Node *symbol) {
+void Scope::define(const std::string &name, Node *symbol) {
 
 }
 
-Node *Scope::resolve(const string &name) {
+Node *Scope::resolve(const std::string &name) {
     return nullptr;
 }
 
-Node *Scope::resolveLocally(const string &name) {
+Node *Scope::resolveLocally(const std::string &name) {
     return nullptr;
 }

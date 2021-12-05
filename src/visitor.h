@@ -23,6 +23,7 @@ class ReturnStmt;
 
 class VarDef;
 class FuncDef;
+class StructDef;
 
 class Visitor {
 public:
@@ -45,6 +46,7 @@ public:
 
     virtual void visit(VarDef* node) {};
     virtual void visit(FuncDef* node) {};
+    virtual void visit(StructDef* node) {};
     //@formatter:on
 };
 

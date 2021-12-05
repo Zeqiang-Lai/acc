@@ -119,7 +119,7 @@ void ASTPrinter::visit(VarDef *node) {
     print("VarDef");
     indent();
 
-    print("Name(%s)", node->id->name.c_str());
+    print("Name(%s)", node->name.c_str());
 
     if(node->initializer != nullptr) {
         print("Init");
@@ -135,14 +135,14 @@ void ASTPrinter::visit(FuncDef *node) {
     print("FuncDef");
     indent();
 
-    print("Name(%s)", node->id->name.c_str());
+    print("Name(%s)", node->name.c_str());
 
-    print("Params");
-    indent();
-    for(auto param : node->params) {
-        print("Param(%s)", param->name.c_str());
-    }
-    deindent();
+//    print("Params");
+//    indent();
+//    for(auto param : node->params) {
+//        print("Param(%s)", param->name.c_str());
+//    }
+//    deindent();
 
     print("Body");
     indent();
@@ -166,3 +166,4 @@ void ASTPrinter::visit(TranslationUnit *node) {
         decl->accept(this);
     }
 }
+

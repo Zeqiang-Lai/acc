@@ -57,7 +57,7 @@ void LLVMEmitter::visit(VarDef *node) {
 }
 
 void LLVMEmitter::visit(FuncDef *node) {
-    llvm::Function *func = module->getFunction(node->id->name);
+    llvm::Function *func = module->getFunction(node->name);
     llvm::BasicBlock *BB = llvm::BasicBlock::Create(*context, "entry", func);
     builder->SetInsertPoint(BB);
 

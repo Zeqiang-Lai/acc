@@ -4,7 +4,7 @@ struct point {
     int y;
 };
 
-int f(int a[], struct point y) {
+int f(int a, struct point y) {
     return 0;
 }
 
@@ -13,7 +13,5 @@ int global_var = 10;
 int main()
 {
     struct point x;
-    int a = 10;
-    int b[10];
-    float c[5][10];
+    double a = 10;
 }

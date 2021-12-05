@@ -10,7 +10,9 @@
 #include <utility>
 
 class Type {
-
+public:
+    // workaround of instanceOf in c++
+    virtual inline bool isStructType() { return false; }
 };
 
 enum class PrimitiveTypeTag {
@@ -28,13 +30,15 @@ public:
 
 class StructType : public Type {
 public:
-    std::map<std::string, Type *> fields;
-    std::string &name;
-    bool incomplete;
+    std::map<std::string, Type*> fields;
+    std::string name;
+    bool complete;
 
-    StructType(std::string &name) : name(name), incomplete(true) {}
+    StructType(std::string &name) : name(name), complete(true) {}
 
     Type *field(const std::string &name) { return fields[name]; }
+
+    bool isStructType() override { return true; }
 };
 
 class ArrayType : public Type {

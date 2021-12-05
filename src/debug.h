@@ -37,7 +37,7 @@ public:
 protected:
     int indent_level = 0;
     void indent() { indent_level += 1; }
-    void deindent() { indent_level = max(0, indent_level-1);}
+    void deindent() { indent_level = std::max(0, indent_level-1);}
     void print(const char* fmt, ...) const {
         for(int i=0; i<indent_level; i++) printf(" ");
         va_list arg;
@@ -50,7 +50,7 @@ protected:
     //@formatter:on
 };
 
-static std::map<BinaryOp, string> binaryOp2string = {
+static std::map<BinaryOp, std::string> binaryOp2string = {
         {BinaryOp::Plus,           "+"},
         {BinaryOp::Minus,          "-"},
         {BinaryOp::Multiply,       "*"},
@@ -66,7 +66,7 @@ static std::map<BinaryOp, string> binaryOp2string = {
         {BinaryOp::LogicalOr,      "||"},
 };
 
-static std::map<UnaryOp, string> unaryOp2string = {
+static std::map<UnaryOp, std::string> unaryOp2string = {
         {UnaryOp::Complement, "^"},
         {UnaryOp::Not,        "!"},
         {UnaryOp::Pointer,    "*"},

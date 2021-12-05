@@ -2,7 +2,7 @@
 #include "type.h"
 
 #include <iostream>
-#include "error.h"
+#include "diagnostic.h"
 
 TranslationUnit *Parser::parse() {
     /*
@@ -12,25 +12,31 @@ TranslationUnit *Parser::parse() {
      *  VarDef(global): Type x,y,z;
      */
 
-    std::vector < Node * > defs;
+    std::vector<Node *> defs;
     while (!match(TokenType::END)) {
         Type *baseType = parseTypeSpecifier();
         if (match(TokenType::SEMICOLON)) { continue; } // incomplete def
+
+        // struct
+        if (baseType->isStructType() && peek().type == TokenType::LBRACE) {
+            auto *type = static_cast<StructType *>(baseType);
+            parseStructDef(type);
+            continue;
+        }
+
+        auto id = consume(TokenType::ID);
+
+        // function
+        if (peek().type == TokenType::LPAREN) {
+            defs.push_back(parseFuncDef(baseType, id));;
+            continue;
+        }
+
+        // global variable
         do {
-            Node *def;
-            switch (peek().type) {
-                case TokenType::LBRACE:
-                    def = parseStructDef(baseType);
-                    break;
-                case TokenType::LPAREN:
-                    def = parseFuncDef(baseType);
-                    break;
-                default:
-                    def = parseVarDef(baseType);
-                    break;
-            }
-            defs.push_back(def);
+            defs.push_back(parseVarDef(baseType, id));
         } while (match(TokenType::COMMA));
+        consume(TokenType::SEMICOLON);
     }
     return new TranslationUnit(defs);
 }
@@ -52,7 +58,9 @@ Type *Parser::parseTypeSpecifier() {
     if (token.type == TokenType::STRUCT) {
         auto id = consume(TokenType::ID);
         if (!structMap.contains(id.string_value)) {
-            structMap[id.string_value] = new StructType(id.string_value);
+            auto type = new StructType(id.string_value);
+            type->complete = false;
+            structMap[id.string_value] = type;
         }
         return structMap[id.string_value];
     } else {
@@ -61,50 +69,45 @@ Type *Parser::parseTypeSpecifier() {
     }
 }
 
-StructDef *Parser::parseStructDef(Type *pType) {
-    return nullptr;
-}
-
-FuncDef *Parser::parseFuncDef(Type *pType) {
-    return nullptr;
-}
-
-VarDef *Parser::parseVarDef(Type *pType) {
-    return nullptr;
-}
-
-Node *Parser::parseFuncOrVariable() {
-    Type *type = parseTypeSpecifier();
-    Identifier *id = parseIdentifier();
-
-    // if start with '(', it is function
-    if (match(TokenType::LPAREN)) {
-        vector < Identifier * > params;
-        while (!match(TokenType::RPAREN)) {
-            auto paramType = parseTypeSpecifier();
-            auto paramID = parseIdentifier();
-            paramID->type = paramType;
-            params.push_back(paramID);
-        }
-        CompoundStmt *body = parseCompoundStmt();
-        return new FuncDef(id, type, params, body);
+void Parser::parseStructDef(StructType *baseType) {
+    if (baseType->complete) {
+        internal_error("duplicate struct definition of %s", baseType->name.c_str());
     }
-
-    // array definition
-    if (match(TokenType::LBRACKET)) {
-        // TODO
+    next(); // consume '{'
+    while (!match(TokenType::RBRACE)) {
+        auto type = parseTypeSpecifier();
+        do {
+            auto id = consume(TokenType::ID);
+            auto def = parseVarDef(type, id);
+            baseType->fields[def->name] = def->type;
+        } while (match(TokenType::COMMA));
+        consume(TokenType::SEMICOLON);
     }
+    consume(TokenType::SEMICOLON);
+}
 
-    // initializer
+FuncDef *Parser::parseFuncDef(Type *returnType, const Token &id) {
+    next(); // consume (
+    std::map<std::string, Type *> paramTypes;
+    if (!match(TokenType::RPAREN)) {
+        do {
+            auto type = parseTypeSpecifier();
+            auto id = consume(TokenType::ID);
+            auto param = parseVarDef(type, id);
+            paramTypes[id.string_value] = param->type;
+        } while (match(TokenType::COMMA));
+        consume(TokenType::RPAREN);
+    }
+    CompoundStmt *body = parseCompoundStmt();
+    return new FuncDef(id.string_value, body, returnType, paramTypes);
+}
+
+VarDef *Parser::parseVarDef(Type *baseType, const Token &id) {
     Expr *init = nullptr;
     if (match(TokenType::ASSIGN)) {
         init = parseExpr();
     }
-
-    consume(TokenType::SEMICOLON);
-
-    id->type = type;
-    return new VarDef(id, init);
+    return new VarDef(id.string_value, init, baseType);
 }
 
 // endregion
@@ -320,7 +323,7 @@ Expr *Parser::parsePostfixExpr() {
     }
     if (token.type == TokenType::LPAREN) {
         next();
-        vector < Expr * > args;
+        std::vector<Expr *> args;
         if (peek().type != TokenType::RPAREN) {
             do {
                 args.push_back(parseExpr());
@@ -360,19 +363,6 @@ Identifier *Parser::parseIdentifier() {
 
 // region stmt
 
-Stmt *Parser::parseStmt() {
-    switch (peek().type) {
-        case TokenType::IF:
-            return parseIfStmt();
-        case TokenType::LBRACE:
-            return parseCompoundStmt();
-        case TokenType::RETURN:
-            return parseReturnStmt();
-        default:
-            return parseExprStmt();
-    }
-}
-
 Stmt *Parser::parseIfStmt() {
     consume(TokenType::IF);
     consume(TokenType::LPAREN);
@@ -389,9 +379,32 @@ Stmt *Parser::parseIfStmt() {
 
 CompoundStmt *Parser::parseCompoundStmt() {
     consume(TokenType::LBRACE);
-    vector < Node * > items;
+    std::vector<Node *> items;
     while (!match(TokenType::RBRACE) && !match(TokenType::END)) {
-        items.push_back(parseStmt());
+        switch (peek().type) {
+            case TokenType::IF:
+                items.push_back(parseIfStmt());
+                continue;
+            case TokenType::LBRACE:
+                items.push_back(parseCompoundStmt());
+                continue;
+            case TokenType::RETURN:
+                items.push_back(parseReturnStmt());
+                continue;
+        }
+        if (peek().type == TokenType::INT || peek().type == TokenType::VOID ||
+            peek().type == TokenType::CHAR || peek().type == TokenType::DOUBLE ||
+            peek().type == TokenType::STRUCT) {
+            Type *baseType = parseTypeSpecifier();
+            if (match(TokenType::SEMICOLON)) { continue; } // incomplete def
+            auto id = consume(TokenType::ID);
+            do {
+                items.push_back(parseVarDef(baseType, id));
+            } while (match(TokenType::COMMA));
+            consume(TokenType::SEMICOLON);
+        } else {
+            items.push_back(parseExprStmt());
+        }
     }
     return new CompoundStmt(items);
 }
@@ -412,24 +425,6 @@ Stmt *Parser::parseReturnStmt() {
     return new ReturnStmt(value);
 }
 
-
-
-
 // endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // endregion

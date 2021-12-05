@@ -210,31 +210,28 @@ public:
 
 class VarDef : public Node {
 public:
-    Identifier *id;
+    std::string name;
     Expr *initializer;
+    Type *type;
 public:
-    VarDef(Identifier *id, Expr *initializer) : id(id), initializer(initializer) {}
+    VarDef(const std::string &name, Expr *initializer, Type *type) : name(name), initializer(initializer), type(type) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
 
 class FuncDef : public Node {
 public:
-    Identifier *id;
+    std::string name;
     CompoundStmt *body;
-    std::vector<Identifier *> params;
     Type *returnType;
+    std::map<std::string, Type *> paramTypes;
 public:
-    FuncDef(Identifier *id, Type *returnType,
-            const std::vector<Identifier *> &params,
-            CompoundStmt *body) : id(id), returnType(returnType), params(params),
-                                  body(body) {
-
-    }
+    FuncDef(const std::string &name, CompoundStmt *body, Type *returnType,
+            const std::map<std::string, Type *> &paramTypes) : name(name), body(body), returnType(returnType),
+                                                               paramTypes(paramTypes) {}
 
     void accept(Visitor *visitor) override { visitor->visit(this); }
 };
-
 
 class TranslationUnit {
 public:

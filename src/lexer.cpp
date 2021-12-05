@@ -58,7 +58,9 @@ Token Lexer::identifier() {
     if (keywordmap.contains(name)) {
         return Token(keywordmap[name]);
     }
-    return Token(TokenType::ID, name);
+    chs.push_back('\0');
+    string s(chs.begin(), chs.end());
+    return Token(TokenType::ID, s);
 }
 
 Token Lexer::number() {

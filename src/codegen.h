@@ -11,15 +11,9 @@
 #include "llvm/IR/Function.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Value.h"
 #include "llvm/IR/Verifier.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/Transforms/InstCombine/InstCombine.h"
-#include "llvm/Transforms/Scalar.h"
-#include "llvm/Transforms/Scalar/GVN.h"
-#include "llvm/Transforms/Utils.h"
 
 //@formatter:off232
 class LLVMEmitter : public Visitor{
@@ -58,7 +52,7 @@ protected:
     std::unique_ptr<llvm::Module> module;
 
 public:
-    explicit LLVMEmitter(const string &module_name) {
+    explicit LLVMEmitter(const std::string &module_name) {
         // Open a new context and module.
         context = std::make_unique<llvm::LLVMContext>();
         module = std::make_unique<llvm::Module>(module_name, *context);
