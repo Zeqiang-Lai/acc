@@ -28,7 +28,7 @@ private:
     void expect(char target);
 
 private:
-    int mark_row, mark_col;
+    int mark_row, mark_col, mark_idx;
     void mark_begin();
 
 private:

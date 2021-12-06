@@ -5,26 +5,9 @@
 #ifndef ACC_DIAGNOSTIC_H
 #define ACC_DIAGNOSTIC_H
 
-#include <string>
-#include <cstdarg>
+void internal_error(const char *fmt, ...);
 
-void internal_error(const char* fmt, ...) {
-    printf("error: ");
-    va_list arg;
-    va_start(arg, fmt);
-    vprintf(fmt, arg);
-    va_end(arg);
-    printf("\n");
-    exit(-1);
-}
-
-void warning(const char* fmt, ...) {
-    printf("warning: ");
-    va_list arg;
-    va_start(arg, fmt);
-    vprintf(fmt, arg);
-    va_end(arg);
-    printf("\n");
-}
+void error(const char *fmt, ...);
+void warning(const char *fmt, ...);
 
 #endif //ACC_DIAGNOSTIC_H

@@ -6,9 +6,11 @@
 #define ACC_PARSER_H
 
 #include <vector>
+#include <iostream>
 #include "token.h"
 #include "ast.h"
 #include "type.h"
+#include "diagnostic.h"
 
 // @formatter:off
 class Parser {
@@ -25,6 +27,9 @@ protected:
     bool match(TokenType type);
     inline Token peek();
     inline Token next();
+
+protected:
+    void log_error(const char* fmt, ...);
 
 protected:
     std::map<std::string, StructType*> structMap;

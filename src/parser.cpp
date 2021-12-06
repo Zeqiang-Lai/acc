@@ -1,8 +1,4 @@
 #include "parser.h"
-#include "type.h"
-
-#include <iostream>
-#include "diagnostic.h"
 
 TranslationUnit *Parser::parse() {
     /*
@@ -65,13 +61,13 @@ Type *Parser::parseTypeSpecifier() {
         return structMap[id.string_value];
     } else {
         // expect external declaration
-        internal_error("expect type specifier");
+        log_error("expect type specifier");
     }
 }
 
 void Parser::parseStructDef(StructType *baseType) {
     if (baseType->complete) {
-        internal_error("duplicate struct definition of %s", baseType->name.c_str());
+        log_error("duplicate struct definition of %s", baseType->name.c_str());
     }
     next(); // consume '{'
     while (!match(TokenType::RBRACE)) {
@@ -120,8 +116,7 @@ Token Parser::consume(TokenType type) {
         next();
         return token;
     } else {
-        std::cerr << "expect " << tokentype2string[type] << std::endl;
-        exit(-1);
+        log_error("expect %s", tokentype2string[type].c_str());
     }
 }
 
@@ -423,6 +418,18 @@ Stmt *Parser::parseReturnStmt() {
     }
     consume(TokenType::SEMICOLON);
     return new ReturnStmt(value);
+}
+
+void Parser::log_error(const char *fmt, ...) {
+    auto anchor = tokens[index-1];
+    printf("file:%d:%d: ", anchor.row, anchor.col + anchor.length);
+    printf("error: ");
+    va_list arg;
+    va_start(arg, fmt);
+    vprintf(fmt, arg);
+    va_end(arg);
+    printf("\n");
+    exit(-1);
 }
 
 // endregion

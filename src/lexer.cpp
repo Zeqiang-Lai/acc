@@ -177,12 +177,13 @@ Token Lexer::make_token(TokenType type) {
 }
 
 Token Lexer::make_token(Token base) {
-    base.setpos(mark_row, mark_col);
+    base.setspan(mark_row, mark_col, idx-mark_idx);
     return base;
 }
 
 void Lexer::mark_begin() {
     mark_row = row;
     mark_col = col;
+    mark_idx = idx;
 }
 

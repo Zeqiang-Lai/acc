@@ -39,7 +39,7 @@ public:
     char char_value;
     std::string string_value;
 
-    int row, col;
+    int row, col, length;
 
     Token(TokenType type) : type(type) {}
     Token(TokenType type, double float_value) : type(type), float_value(float_value) {}
@@ -47,9 +47,10 @@ public:
     Token(TokenType type, char char_value) : type(type), char_value(char_value) {}
     Token(TokenType type, std::string string_value) : type(type), string_value(string_value) {}
 
-    void setpos(int row, int col) {
+    void setspan(int row, int col, int length) {
         this->row = row;
         this->col = col;
+        this->length = length;
     }
 
     friend std::ostream &operator<<(std::ostream &out, const Token &token);
