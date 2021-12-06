@@ -58,7 +58,6 @@ Token Lexer::identifier() {
     if (keywordmap.contains(name)) {
         return make_token(Token(keywordmap[name]));
     }
-    chs.push_back('\0');
     string s(chs.begin(), chs.end());
     return make_token(Token(TokenType::ID, s));
 }
