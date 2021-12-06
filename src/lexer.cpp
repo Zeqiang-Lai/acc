@@ -43,7 +43,7 @@ Token Lexer::character() {
     } else {
         expect('\'');
     }
-    return Token(TokenType::CHAR_CONST, ch);
+    return make_token(Token(TokenType::CHAR_CONST, ch));
 }
 
 Token Lexer::identifier() {
@@ -56,11 +56,11 @@ Token Lexer::identifier() {
     back();
     string name(chs.begin(), chs.end());
     if (keywordmap.contains(name)) {
-        return Token(keywordmap[name]);
+        return make_token(Token(keywordmap[name]));
     }
     chs.push_back('\0');
     string s(chs.begin(), chs.end());
-    return Token(TokenType::ID, s);
+    return make_token(Token(TokenType::ID, s));
 }
 
 Token Lexer::number() {
@@ -80,10 +80,10 @@ Token Lexer::number() {
         }
         back();
         number.push_back('\0');
-        return Token(TokenType::FLOAT_CONST, atof(number.data()));
+        return make_token(Token(TokenType::FLOAT_CONST, atof(number.data())));
     }
     number.push_back('\0');
-    return Token(TokenType::INT_CONST, atoi(number.data()));
+    return make_token(Token(TokenType::INT_CONST, atoi(number.data())));
 }
 
 Token Lexer::lex() {
@@ -91,6 +91,7 @@ Token Lexer::lex() {
     skip_comment();
     skip_whitespace();
 
+    mark_begin();
     //@formatter:off
     switch (next()) {
         case '>': return make_token(match('=') ? TokenType::GEQ : TokenType::GT);
@@ -136,7 +137,14 @@ char Lexer::peek() {
 }
 
 char Lexer::next() {
-    return code[idx++];
+    char ch = code[idx++];
+    col++;
+    if (ch == '\n') {
+        row++;
+        pre_col = col;
+        col = 1;
+    }
+    return ch;
 }
 
 char Lexer::previous() {
@@ -145,11 +153,16 @@ char Lexer::previous() {
 
 void Lexer::back() {
     idx--;
+    col--;
+    if (peek() == '\n') {
+        row--;
+        col = pre_col;
+    }
 }
 
 bool Lexer::match(char target) {
     if (peek() == target) {
-        idx++;
+        next();
         return true;
     }
     return false;
@@ -161,6 +174,16 @@ void Lexer::expect(char target) {
 }
 
 Token Lexer::make_token(TokenType type) {
-    return Token(type);
+    return make_token(Token(type));
+}
+
+Token Lexer::make_token(Token base) {
+    base.setpos(mark_row, mark_col);
+    return base;
+}
+
+void Lexer::mark_begin() {
+    mark_row = row;
+    mark_col = col;
 }
 
